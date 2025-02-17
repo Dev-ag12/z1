@@ -126,6 +126,10 @@ async def upload_image(file: UploadFile = File(...)):
     for size in sizes:
         logger.info(f"Resizing image to size: {size}")
         resized_img = resize_image(image, size)
+        # Convert image to RGB if necessary
+        if resized_img.mode != "RGB":
+            logger.debug(f"Converting image mode from {resized_img.mode} to RGB for JPEG compatibility.")
+            resized_img = resized_img.convert("RGB")
         buf = io.BytesIO()
         resized_img.save(buf, format="JPEG")
         buf.seek(0)
